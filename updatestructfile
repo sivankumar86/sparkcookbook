@@ -1,0 +1,40 @@
+##This example is to update existing struct in dataframe using pyspark
+
+
+##create df here
+##
+##
+##
+
+
+from pyspark.sql.functions import lit, col, explode, to_timestamp, lower, udf,to_json,from_json
+
+
+df_new = df.withColumn("verifications_json", to_json("verifications")).drop("verifications")
+
+import json
+from pyspark.sql.types import BooleanType,StructType,StructField,ArrayType,StringType
+
+
+def update(s):
+    r=json.loads(s)
+    rl=[]
+    for i in r:
+      i["Bucket"]="testzml-bucket"
+      rl.append(i)
+    
+    return json.dumps(rl)
+
+convertUDF = udf(lambda z: update(z))
+
+df_up=df_new.withColumn('verifications_json_u',convertUDF(col('verifications_json'))).drop("verifications_json")
+
+nschema=ArrayType(df.schema["verifications"].dataType.elementType)
+df_new_write = df_up.select("*", from_json("verifications_json_u",nschema).alias("verifications")).drop("verifications_json_u")
+
+df_new_write.write.partitionBy("year","month","day").parquet("s3://output/dev_verification_result_data/")
+
+out=df.select(explode(col("verifications")))
+
+
+
