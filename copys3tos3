@@ -1,0 +1,10 @@
+#copy bucket to bucket 
+
+import boto3
+s3 = boto3.resource('s3')
+for r in down.collect():
+  copy_source = {
+      'Bucket': r["Bucket"],
+      'Key': r["FilePath"]
+  }
+  s3.meta.client.copy(copy_source, 'testzml-bucket', r["FilePath"])
