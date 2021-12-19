@@ -1,0 +1,5 @@
+## How to set hadoop config in pyspark notebook (spark magic)
+
+sc=spark.sparkContext
+
+sc._jsc.hadoopConfiguration().set('my.mapreduce.setting', 'someVal')
