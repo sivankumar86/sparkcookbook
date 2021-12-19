@@ -1,0 +1,12 @@
+##copy from s3 to s3 without source kms details using boto3
+
+##df=createdataframe
+
+import boto3
+s3 = boto3.client('s3')
+for r in df.collect():
+  copy_source = {
+      'Bucket': r["Bucket"],
+      'Key': r["FilePath"]
+  }
+  response = s3.copy_object(Bucket='testzml-bucket',CopySource=src,Key=r["FilePath"])
