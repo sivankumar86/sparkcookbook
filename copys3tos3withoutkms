@@ -9,4 +9,4 @@ for r in df.collect():
       'Bucket': r["Bucket"],
       'Key': r["FilePath"]
   }
-  response = s3.copy_object(Bucket='testzml-bucket',CopySource=src,Key=r["FilePath"])
+  response = s3.copy_object(Bucket='testzml-bucket',CopySource=copy_source,Key=r["FilePath"])
